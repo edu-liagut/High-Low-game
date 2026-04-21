@@ -10,6 +10,13 @@ import json
 # === FILHANTERING ===
 
 def ladda_highscore(filnamn="highscore.json"):
+    try:
+        fil = open(filnamn, "r", encoding="utf-8")
+        data= json.load(fil)
+        fil.close()
+        return data
+    except FileNotFoundError:
+        return[]
     """
     Laddar highscore-listan från en JSON-fil.
 
@@ -27,6 +34,9 @@ def ladda_highscore(filnamn="highscore.json"):
 
 
 def spara_highscore(highscore_lista, filnamn="highscore.json"):
+    fil = open(filnamn, "w", encoding="utf-8")
+    json.dump(highscore_lista, fil, indent=4, ensure_ascii=False)
+    fil.close()
     """
     Sparar highscore-listan till en JSON-fil.
 
@@ -73,7 +83,13 @@ pass
 # === HIGHSCORE-VISNING ===
 
 def visa_highscore(highscore_lista):
-    """
+    if not highscore_lista:
+        print("Inget highscore sparat ännu")
+        return
+    sorterad = sorted(highscore_lista, key=lambda x: x["gissningar"])
+    print("\n===HIGHSCORE===")
+    for index,spelare in enumerate(sorterad, start=1):
+        """
     Visar highscore-listan sorterad med bästa spelaren först.
 
     Parametrar:
